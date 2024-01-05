@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
-const Input = styled.input`
+export const CustomInputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+export const Input = styled.input`
   background-color: #FFFFFF;
   height: 40px;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -9,5 +14,3 @@ const Input = styled.input`
   text-indent: 20px;
   margin: 0.6em 0;
 `
-
-export default Input;

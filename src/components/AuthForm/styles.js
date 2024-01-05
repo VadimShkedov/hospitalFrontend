@@ -26,6 +26,10 @@ export const RightFooter = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+
+  & > * {
+    margin-bottom: 0.5rem;
+  }
 `
 
 export const ErrorMessage = styled.p`

@@ -1,23 +1,25 @@
 import { useState } from "react";
-
-import { isLoginValid, isPasswordValid } from "../../../helpers/authValidation";
-import registrationRequest from "../../../service/registration";
-import { Content } from "./styles";
-import Logo from "../../UI/Logo";
-import Header from "../../UI/Header";
-import RegistrationForm from "../../RegistrationForm";
+import { useDispatch } from "react-redux";
+import { stringInputValidation, stringPasswordValidation } from "../../../helpers/validation";
+import { registration } from "../../../store/asyncActions/registration";
+import CustomInput from "../../UI/Input";
+import { Container } from "./styles";
+import Logo from "../../UI/Logo/Logo";
+import Header from "../../UI/Header/Header";
+import AuthForm from "../../AuthForm";
 import logoImage from "/images/logo.svg";
 import domainLogo from "/images/domain-logo.svg";
 
 const Registration = () => {
+  const dispatch = useDispatch();
   const [warningMessage, setWarningMessage] = useState("");
   const [formData, setFormData] = useState({
     login: "",
     password: "",
     repeatedPassword: ""
   });
- 
-  const handleForm = (e) => setFormData({...formData, [e.target.id]: e.target.value });
+
+  const handleForm = (e) => setFormData({ ...formData, [e.target.id]: e.target.value });
 
   const validateForm = async () => {
     const { login, password, repeatedPassword } = formData;
@@ -27,24 +29,21 @@ const Registration = () => {
       return;
     }
 
-    if (!isLoginValid(login)) {
+    if (!stringInputValidation(login)) {
       setWarningMessage("Недостаточная длина логина");
       return;
     }
 
-    if (!isPasswordValid(password)) {
+    if (!stringPasswordValidation(password)) {
       setWarningMessage("Пароль не прошёл валидацию");
       return;
     }
 
-    try {
-      const response = await registrationRequest(login, password);
-      
-    } catch (error) {
-      
-    }
-
-
+    dispatch(registration(
+      (errorMessage) => setWarningMessage(errorMessage),
+      login,
+      password
+    ));
   }
 
   return (
@@ -53,15 +52,36 @@ const Registration = () => {
         <Logo src={logoImage} alt="" />
         <h1>Зарегистрироваться в системе</h1>
       </Header>
-      <Content>
+      <Container>
         <img src={domainLogo} alt="" />
-        <RegistrationForm
-          formValues={formData} 
-          handleForm={handleForm}
+        <AuthForm
+          isRegistration
           validateForm={validateForm}
           errorMessage={warningMessage}
-        /> 
-      </Content>
+        >
+          <CustomInput
+            id="login"
+            inputHandler={handleForm}
+            inputValue={formData.login}
+            labelText="Логин:"
+            placeholderText="Логин" 
+          />
+          <CustomInput
+            id="password"
+            inputHandler={handleForm}
+            inputValue={formData.password}
+            labelText="Пароль:"
+            placeholderText="Пароль" 
+          />
+          <CustomInput
+            id="repeatedPassword"
+            inputHandler={handleForm}
+            inputValue={formData.repeatedPassword}
+            labelText="Повторите пароль:"
+            placeholderText="Пароль" 
+          />
+        </AuthForm>
+      </Container>
     </div>
   )
 }

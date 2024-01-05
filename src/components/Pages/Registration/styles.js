@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Content = styled.main`
+export const Container = styled.main`
   display: flex;
   justify-content: space-evenly;
 `
